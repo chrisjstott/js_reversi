@@ -28,22 +28,22 @@ Game.prototype.play = function () {
 Game.prototype.playTurn = function (callback) {
   this.board.print();
   rlInterface.question(
-    this.color + ", where do you want to move?",
+    this.turn + ", where do you want to move?",
     handleResponse.bind(this)
   );
 
   function handleResponse (answer) {
     var pos = JSON.parse(answer);
-    if (!this.board.validMove(pos, this.turn) {
+    if (!this.board.validMove(pos, this.turn)) {
       console.log("Invalid move!");
       this.playTurn();
       return;
     }
 
-    this.placePiece(pos, this.turn);
+    this.board.placePiece(pos, this.turn);
     this._flipTurn();
     callback();
-  });
+  }
 };
 
 Game.prototype.runLoop = function (overCallback) {
@@ -55,7 +55,7 @@ Game.prototype.runLoop = function (overCallback) {
     this._flipTurn();
     this.runLoop();
   } else {
-    this.playMove(this.runLoop.bind(this));
+    this.playTurn(this.runLoop.bind(this, overCallback));
   }
 };
 

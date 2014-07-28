@@ -83,7 +83,7 @@ function _positionsToFlip (board, pos, color, dir, piecesToFlip) {
   } else if (board.isMine(nextPos, color)) {
     return piecesToFlip.length == 0 ? null : piecesToFlip;
   } else {
-    return _findPiecesToFlip(board, nextPos, color, dir, piecesToFlip);
+    return _positionsToFlip(board, nextPos, color, dir, piecesToFlip);
   }
 }
 
@@ -92,16 +92,19 @@ Board.prototype.placePiece = function (pos, color) {
     throw "Invalid move!";
   }
 
-  var positionsToFlip = []
+  var positionsToFlip = [];
   for (var dirIdx = 0; dirIdx < Board.DIRS.length; dirIdx++) {
-    positionsToFlip = positionstoFlip.concat(
-      _positionsToFlip(this, pos, color, Board.DIRS[dirIdx])
+
+    positionsToFlip = positionsToFlip.concat(
+      _positionsToFlip(this, pos, color, Board.DIRS[dirIdx]) || []
     );
   }
 
   for (var posIdx = 0; posIdx < positionsToFlip.length; posIdx++) {
     this.getPiece(positionsToFlip[posIdx]).flip();
   }
+
+  this.grid[pos[0]][pos[1]] = new Piece(color);
 };
 
 Board.prototype.print = function () {
@@ -111,11 +114,11 @@ Board.prototype.print = function () {
     for (var j = 0; j < 8; j++) {
       var pos = [i, j];
       rowString +=
-        (this.getPiece(pos) ? "." this.getPiece(pos).toString());
+        (this.getPiece(pos) ? this.getPiece(pos).toString() : ".");
     }
 
     console.log(rowString);
-  });
+  }
 };
 
 Board.prototype.validMove = function (pos, color) {
@@ -125,7 +128,7 @@ Board.prototype.validMove = function (pos, color) {
 
   for (var i = 0; i < Board.DIRS.length; i++) {
     var piecesToFlip =
-      _positionsToFlip(board, pos, color, Board.DIRS[i]);
+      _positionsToFlip(this, pos, color, Board.DIRS[i]);
     if (piecesToFlip) {
       return true;
     }
