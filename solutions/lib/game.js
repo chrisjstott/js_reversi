@@ -1,13 +1,13 @@
 var Piece = require("./piece.js");
 var Board = require("./board.js");
 
-function Game () {
-  this._dirs = [
-    [ 0,  1], [ 1,  1], [ 1,  0],
-    [ 1, -1], [ 0, -1], [-1, -1],
-    [-1,  0], [-1,  1]
-  ];
+var DIRS = [
+  [ 0,  1], [ 1,  1], [ 1,  0],
+  [ 1, -1], [ 0, -1], [-1, -1],
+  [-1,  0], [-1,  1]
+];
 
+function Game () {
   this.board = new Board();
 };
 
@@ -34,7 +34,7 @@ Game.prototype.checkMove = function (start, dir, capture) {
         var piece = that.board.getPiece(spot);
         piece.flip();
       });
-      return adjSpot  
+      return adjSpot
     }
   } else if(this.board.getPiece(adjSpot) === undefined){
     return adjSpot;

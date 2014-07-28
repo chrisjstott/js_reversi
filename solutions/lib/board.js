@@ -21,6 +21,12 @@ function Board () {
   this.grid = _makeGrid();
 }
 
+Board.DIRS = [
+  [ 0,  1], [ 1,  1], [ 1,  0],
+  [ 1, -1], [ 0, -1], [-1, -1],
+  [-1,  0], [-1,  1]
+];
+
 Board.prototype.getPiece = function (pos) {
   if (!this.isValidPos(pos)) {
     throw "Not valid pos!";
@@ -40,9 +46,13 @@ Board.prototype.isFull = function () {
   return true;
 };
 
-Board.prototype.isMine = function (color, pos) {
+Board.prototype.isMine = function (pos, color) {
   var piece = this.getPiece(pos);
   return piece && piece.color === color;
+};
+
+Board.prototype.isOccupied = function (pos) {
+  return !!this.getPiece(pos);
 };
 
 Board.prototype.isValidPos = function (pos) {
@@ -50,15 +60,61 @@ Board.prototype.isValidPos = function (pos) {
 };
 
 Board.prototype.print = function () {
-  this.grid.forEach(function (row, i) {
+  for (var i = 0; i < 8; i++) {
     var rowString = " " + i + " |";
 
     for (var j = 0; j < 8; j++) {
-      rowString += (row[j] ? "." row[j].toString());
-    };
+      var pos = [i, j];
+      rowString +=
+        (this.getPiece(pos) ? "." this.getPiece(pos).toString());
+    }
 
     console.log(rowString);
   });
 };
+
+Board.prototype.validMove = function (color, pos) {
+  if (this.isOccupied(pos)) {
+    return false;
+  }
+
+  var validMoveDir = (function (color, pos, dir) {
+    var nextPos = [pos[0] + dir[0], pos[1] + dir[1]];
+
+    if (!this.isValidPos(nextPos)) {
+      return false;
+    } else if (!this.isOccupied(nextPos)) {
+      return false;
+    } else if (this.isMine(nextPos, color)) {
+      return true;
+    } else {
+      // Recursion FTW!
+      return validMoveDir(color, nextPos, dir);
+    }
+  }).bind(this);
+
+  for (var i = 0; i < Board.DIRS.length; i++) {
+    if (validMoveDir(color, pos, Board.DIRS[i])) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+Board.prototype.validMoves = function (color) {
+  var validMovesList = [];
+
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      if (this.validMove(color, [i, j])) {
+        validMovesList.push([i, j]);
+      }
+    }
+  }
+
+  return validMovesList;
+};
+
 
 module.exports = Board;
