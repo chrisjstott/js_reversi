@@ -1,6 +1,6 @@
-var runGame = function() {
-	var Game = require("./game.js").Game;
-	myGame = new Game();
+var runGame = function () {
+  var Game = require("./game.js");
+  myGame = new Game();
   myGame.runLoop();
 };
 

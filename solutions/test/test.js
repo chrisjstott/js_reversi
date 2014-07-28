@@ -1,7 +1,7 @@
 var assert = require("assert")
-var Board = require("../lib/board.js").Board;
-var Piece = require("../lib/piece.js").Piece;
-var Game = require("../lib/game.js").Game;
+var Board = require("../lib/board.js");
+var Piece = require("../lib/piece.js");
+var Game = require("../lib/game.js");
 
 describe("Piece", function(){
   var darkPiece = new Piece("black");

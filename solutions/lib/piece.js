@@ -14,4 +14,4 @@ Piece.prototype.toString = function () {
   return (this.color === "black") ? "o" : "@";
 };
 
-exports.Piece = Piece;
+module.exports = Piece;
