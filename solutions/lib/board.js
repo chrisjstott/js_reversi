@@ -59,6 +59,43 @@ Board.prototype.isValidPos = function (pos) {
   return (pos[0] >= 0 && pos[0] < 8) && (pos[1] >= 0 && pos[1] < 8);
 };
 
+function _positionsToFlip (board, pos, color, dir, piecesToFlip) {
+  if (!piecesToFlip) {
+    piecesToFlip = [];
+  } else {
+    piecesToFlip.push(pos);
+  }
+
+  var nextPos = [pos[0] + dir[0], pos[1] + dir[1]];
+
+  if (!board.isValidPos(nextPos)) {
+    return null;
+  } else if (!board.isOccupied(nextPos)) {
+    return null;
+  } else if (board.isMine(nextPos, color)) {
+    return piecesToFlip.length == 0 ? null : piecesToFlip;
+  } else {
+    return _findPiecesToFlip(board, nextPos, color, dir, piecesToFlip);
+  }
+}
+
+Board.prototype.placePiece = function (pos, color) {
+  if (!this.validMove(pos, color)) {
+    throw "Invalid move!";
+  }
+
+  var positionsToFlip = []
+  for (var dirIdx = 0; dirIdx < Board.DIRS.length; dirIdx++) {
+    positionsToFlip = positionstoFlip.concat(
+      _positionsToFlip(this, pos, color, Board.DIRS[dirIdx])
+    );
+  }
+
+  for (var posIdx = 0; posIdx < positionsToFlip.length; posIdx++) {
+    this.getPiece(positionsToFlip[posIdx]).flip();
+  }
+};
+
 Board.prototype.print = function () {
   for (var i = 0; i < 8; i++) {
     var rowString = " " + i + " |";
@@ -73,28 +110,15 @@ Board.prototype.print = function () {
   });
 };
 
-Board.prototype.validMove = function (color, pos) {
+Board.prototype.validMove = function (pos, color) {
   if (this.isOccupied(pos)) {
     return false;
   }
 
-  var validMoveDir = (function (color, pos, dir) {
-    var nextPos = [pos[0] + dir[0], pos[1] + dir[1]];
-
-    if (!this.isValidPos(nextPos)) {
-      return false;
-    } else if (!this.isOccupied(nextPos)) {
-      return false;
-    } else if (this.isMine(nextPos, color)) {
-      return true;
-    } else {
-      // Recursion FTW!
-      return validMoveDir(color, nextPos, dir);
-    }
-  }).bind(this);
-
   for (var i = 0; i < Board.DIRS.length; i++) {
-    if (validMoveDir(color, pos, Board.DIRS[i])) {
+    var piecesToFlip =
+      _positionsToFlip(board, pos, color, Board.DIRS[i]);
+    if (piecesToFlip) {
       return true;
     }
   }
@@ -107,7 +131,7 @@ Board.prototype.validMoves = function (color) {
 
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
-      if (this.validMove(color, [i, j])) {
+      if (this.validMove([i, j], color)) {
         validMovesList.push([i, j]);
       }
     }
@@ -115,6 +139,5 @@ Board.prototype.validMoves = function (color) {
 
   return validMovesList;
 };
-
 
 module.exports = Board;
