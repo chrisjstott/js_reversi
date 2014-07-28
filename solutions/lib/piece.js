@@ -11,7 +11,7 @@ Piece.prototype.flip = function () {
 };
 
 Piece.prototype.toString = function () {
-  return (this.color === "black") ? "o" : "@";
+  return (this.color === "black") ? "O" : "X";
 };
 
 module.exports = Piece;

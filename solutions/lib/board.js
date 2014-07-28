@@ -1,76 +1,64 @@
-var Piece = require("./piece.js");
+var Piece = require("./piece");
 
 function _makeGrid () {
-  var grid = []
+  var grid = [];
+
   for (var i = 0; i < 8; i++) {
     var row = new Array(8);
     grid.push(row);
   }
+
   // Add initial 4 pieces for Reversi
   grid[3][3] = new Piece("white");
   grid[3][4] = new Piece("black");
   grid[4][3] = new Piece("black");
   grid[4][4] = new Piece("white");
+
   return grid;
-};
+}
 
 function Board () {
   this.grid = _makeGrid();
+}
+
+Board.prototype.getPiece = function (pos) {
+  if (!this.isValidPos(pos)) {
+    throw "Not valid pos!";
+  }
+
+  return this.grid[pos[0]][pos[1]];
 };
 
-Board.prototype.full = function () {
-  var pieces = [];
-
-  for (var i = 0; i < 8; i++){
-    for (var j = 0; j < 8; j++){
-      var piece = this.grid[i][j];
-      if (piece) {
-        pieces.push(piece);
-      }
+Board.prototype.isFull = function () {
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      var piece = this.getPiece([i, j]);
+      if (!piece) { return false; }
     }
   }
 
-  return (pieces.length === 64);
+  return true;
 };
 
-Board.prototype.each = function (callback){
-  this.grid.forEach(function (row, i) {
-    for (var j = 0; j < 8; j++) {
-      callback(row[j], [i, j]);
-    }
-  });
+Board.prototype.isMine = function (color, pos) {
+  var piece = this.getPiece(pos);
+  return piece && piece.color === color;
+};
+
+Board.prototype.isValidPos = function (pos) {
+  return (pos[0] >= 0 && pos[0] < 8) && (pos[1] >= 0 && pos[1] < 8);
 };
 
 Board.prototype.print = function () {
   this.grid.forEach(function (row, i) {
-    var rowString = " "+i+" |";
+    var rowString = " " + i + " |";
 
     for (var j = 0; j < 8; j++) {
-      if (typeof row[j] === 'undefined') {
-        rowString += " _ ";
-      } else {
-        rowString += " " + row[j].toString() + " ";
-      }
+      rowString += (row[j] ? "." row[j].toString());
     };
 
     console.log(rowString);
   });
-};
-
-Board.prototype.getPiece = function (pos) {
-  return this.grid[pos[0]][pos[1]];
-};
-
-Board.prototype.isMine = function (color, pos) {
-  if ((typeof this.getPiece(pos)) !== 'undefined') {
-    return (this.getPiece(pos).color === color);
-  }
-
-  return false;
-};
-
-Board.prototype.offBoard = function (pos) {
-  return (pos[0] > 7 || pos[0] < 0 || pos[1] > 7 || pos[1] < 0);
 };
 
 module.exports = Board;
