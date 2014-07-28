@@ -1,4 +1,4 @@
-function Piece(color) {
+function Piece (color) {
   this.color = color;
 }
 
