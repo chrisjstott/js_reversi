@@ -39,7 +39,7 @@ Board.prototype.each = function (callback){
       callback(row[j], [i, j]);
     }
   });
-}
+};
 
 Board.prototype.print = function () {
   this.grid.forEach(function (row, i) {
