@@ -1,6 +1,9 @@
 # REVERSI JS STYLE
 
-To run the mocha tests, use the following command in the terminal (in
-the top level directory of this file:)
+To play the game, run
 
-`./node_modules/mocha/bin/mocha`
+    npm start
+
+To run the tests, run
+
+    npm test
