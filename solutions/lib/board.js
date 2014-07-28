@@ -35,6 +35,10 @@ Board.prototype.getPiece = function (pos) {
   return this.grid[pos[0]][pos[1]];
 };
 
+Board.prototype.hasMove = function (color) {
+  return this.validMoves(color).length != 0;
+};
+
 Board.prototype.isFull = function () {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
@@ -54,6 +58,10 @@ Board.prototype.isMine = function (pos, color) {
 Board.prototype.isOccupied = function (pos) {
   return !!this.getPiece(pos);
 };
+
+Board.prototype.isOver = function () {
+  return !this.hasMove("black") && !this.hasMove("white");
+}
 
 Board.prototype.isValidPos = function (pos) {
   return (pos[0] >= 0 && pos[0] < 8) && (pos[1] >= 0 && pos[1] < 8);
