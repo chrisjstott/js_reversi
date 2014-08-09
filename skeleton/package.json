@@ -7,12 +7,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/appacademy-solutions/js-reversi"
+    "url": "https://github.com/appacademy/js-reversi"
   },
   "author": "App Academy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paradasia/js-reversi/issues"
+    "url": "https://github.com/appacademy/js-reversi/issues"
   },
   "devDependencies": {
     "mocha": "~1.13.0"
