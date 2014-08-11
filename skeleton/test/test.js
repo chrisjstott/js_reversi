@@ -76,7 +76,7 @@ describe("Board", function () {
 });
 
 describe("Game", function () {
-  describe.only("#placePiece", function () {
+  describe("#placePiece", function () {
     var testGame = new Game();
 
     it("should allow a player to make a valid move", function(){
