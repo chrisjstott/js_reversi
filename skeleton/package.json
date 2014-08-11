@@ -4,6 +4,7 @@
   "description": "A Reversi CLI game.",
   "scripts": {
     "start": "node bin/main.js",
+		"test": "mocha test/test.js"
   },
   "repository": {
     "type": "git",
