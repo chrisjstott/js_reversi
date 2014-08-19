@@ -89,7 +89,7 @@ function _positionsToFlip (board, pos, color, dir, piecesToFlip) {
 
 Board.prototype.placePiece = function (pos, color) {
   if (!this.validMove(pos, color)) {
-    throw "Invalid move!";
+    throw new Error('Invalid move!');
   }
 
   var positionsToFlip = [];
