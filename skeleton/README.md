@@ -1,5 +1,11 @@
 # REVERSI JS STYLE
 
+Before beginning, install dependencies with
+
+```
+npm install
+```
+
 To play the game, run
 
     npm start
