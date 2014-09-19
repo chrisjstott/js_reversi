@@ -29,14 +29,14 @@ Board.DIRS = [
 
 Board.prototype.getPiece = function (pos) {
   if (!this.isValidPos(pos)) {
-    throw "Not valid pos!";
+    throw new Error("Not valid pos!");
   }
 
   return this.grid[pos[0]][pos[1]];
 };
 
 Board.prototype.hasMove = function (color) {
-  return this.validMoves(color).length != 0;
+  return this.validMoves(color).length !== 0;
 };
 
 Board.prototype.isFull = function () {
@@ -61,7 +61,7 @@ Board.prototype.isOccupied = function (pos) {
 
 Board.prototype.isOver = function () {
   return !this.hasMove("black") && !this.hasMove("white");
-}
+};
 
 Board.prototype.isValidPos = function (pos) {
   return (pos[0] >= 0 && pos[0] < 8) && (pos[1] >= 0 && pos[1] < 8);

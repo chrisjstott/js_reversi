@@ -43,6 +43,14 @@ describe("Board", function () {
     testBoard = new Board();
   });
 
+  var fillBoard = function(board) {
+    for (var i = 0; i < 8; i ++) {
+      for (var j = 0; j < 8; j ++) {
+        board.grid[i][j] = new Piece("white");
+      }
+    }
+  };
+
   describe("#grid", function () {
     it("should be 8x8", function () {
       assert.equal(testBoard.grid.length, 8);
@@ -70,14 +78,31 @@ describe("Board", function () {
   });
 
   describe('#getPiece', function () {
-    // TODO
     it('should return a piece for an occupied position', function () {
       assert(testBoard.getPiece([3, 4]) instanceof Piece, true);
+    });
+
+    it('should return undefined for an empty position', function() {
+      assert.equal(testBoard.getPiece([0, 0]), undefined);
+    });
+
+    it('should throw an error for an invalid position', function() {
+      function pickInvalidPos() {
+        testBoard.getPiece([10, 10]);
+      }
+      assert.throws(pickInvalidPos, Error, 'Not valid pos!');
     });
   });
 
   describe('#hasMove', function () {
-    // TODO
+    it('should return true when a color has one or more moves', function() {
+      assert.equal(testBoard.hasMove('black'), true);
+    });
+
+    it('should return false when a color has no more moves', function() {
+      fillBoard(testBoard);
+      assert.equal(testBoard.hasMove('black'), false);
+    });
   });
 
   describe("#isFull", function () {
@@ -88,35 +113,54 @@ describe("Board", function () {
 
     it("should be full if no spots are empty", function () {
       // Fill the board for the test
-      for (var i = 0; i < 8; i ++) {
-        for (var j = 0; j < 8; j ++) {
-          testBoard.grid[i][j] = new Piece("white");
-        }
-      }
-
+      fillBoard(testBoard);
       // Test fullness
       assert.equal(testBoard.isFull(), true);
     });
   });
 
   describe('#isMine', function() {
-    // TODO
+    it('should return true when the retrieved piece matches the color', function() {
+      assert.equal(testBoard.isMine([3, 3], 'white'), true);
+    });
+
+    it('should return false when retrieved piece does not match', function() {
+      assert.equal(testBoard.isMine([3, 3], 'black'), false);
+    });
+
+    it('should return falsey when retrieved piece is undefined', function() {
+      assert.equal(!testBoard.isMine([0, 0], 'black'), true);
+    });
   });
 
   describe('#isOver', function () {
-    // TODO
+    it('should return false at the start', function() {
+      assert.equal(testBoard.isOver(), false);
+    });
+
+    it('should return true when there are no more moves', function() {
+      fillBoard(testBoard);
+      assert.equal(testBoard.isOver(), true);
+    });
   });
 
   describe('#isValidPos', function () {
-    // TODO
-  });
-
-  describe.only("#placePiece", function () {
-    var testBoard;
-    beforeEach(function () {
-      testBoard = new Board();
+    it('should return false when x or y is less than 0', function() {
+      assert.equal(testBoard.isValidPos([-1, 1]), false);
+      assert.equal(testBoard.isValidPos([1, -1]), false);
     });
 
+    it('should return false when x or y is greater than 7', function() {
+      assert.equal(testBoard.isValidPos([9, 1]), false);
+      assert.equal(testBoard.isValidPos([1, 9]), false);
+    });
+
+    it('should return true otherwise', function() {
+      assert.equal(testBoard.isValidPos([3, 3]), true);
+    });
+  });
+
+  describe("#placePiece", function () {
     it("should allow a player to make a valid move", function(){
       testBoard.placePiece([2, 3], "black");
       assert.equal(testBoard.grid[2][3].color, "black");
@@ -170,12 +214,7 @@ describe("Game", function () {
     var anotherGame = new Game();
 
     it("should require black to take first turn", function () {
-      assert.equal(anotherGame.currentPlayer, "black");
-    });
-
-    it("should switch players after one takes a turn", function () {
-      anotherGame.placePiece([[2, 3], "black"]);
-      assert.equal(anotherGame.currentPlayer, "white");
+      assert.equal(anotherGame.turn, "black");
     });
   });
 });
