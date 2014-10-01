@@ -18,7 +18,6 @@ describe("Piece", function () {
       assert.equal(lightPiece.color, "white");
     });
   });
-
   describe("#flip", function () {
     it("should switch colors when flipped", function () {
       darkPiece.flip();
@@ -189,7 +188,7 @@ describe("Board", function () {
 
     it("should not allow moves that isolate pieces", function () {
       function makeOtherBadMove () {
-        testGame.placePiece([0, 0], "white");
+        testBoard.placePiece([0, 0], "white");
       }
 
       assert.throws(makeOtherBadMove, Error, "Invalid Move");
@@ -197,24 +196,41 @@ describe("Board", function () {
   });
 
   describe('#validMove', function () {
-    // TODO
+    it('should return false for an occupied position', function() {
+      assert.equal(testBoard.validMove([3, 4], 'black'), false);
+    });
+
+    it('should return false for a move that does not capture', function() {
+      assert.equal(testBoard.validMove([2, 3], "white"), false);
+    });
+
+    it('should return true for a valid move', function() {
+      assert.equal(testBoard.validMove([2, 3], "black"), true);
+    });
   });
 
   describe('#validMoves', function () {
-    // TODO
-  });
-});
+    it('should return an empty array when there are no valid moves', function() {
+      fillBoard(testBoard);
+      assert.equal(testBoard.validMoves('black').length, 0);
+    });
 
-describe("Game", function () {
-  describe('#board', function () {
-    // TODO
-  });
+    it('should return an array of valid moves when some are left', function() {
+      var validPositions = [
+        [2, 3],
+        [3, 2],
+        [4, 5],
+        [5, 4]
+      ];
+      var actualPositions = testBoard.validMoves('black');
 
-  describe("players taking turns", function () {
-    var anotherGame = new Game();
+      assert.equal(actualPositions.length, validPositions.length);
 
-    it("should require black to take first turn", function () {
-      assert.equal(anotherGame.turn, "black");
+      actualPositions.forEach(function(actualPosition, index) {
+        var validPosition = validPositions[index];
+        assert.equal(actualPosition[0], validPosition[0]);
+        assert.equal(actualPosition[1], validPosition[1]);
+      });
     });
   });
 });
