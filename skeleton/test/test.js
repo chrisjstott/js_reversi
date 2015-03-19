@@ -104,20 +104,6 @@ describe("Board", function () {
     });
   });
 
-  describe("#isFull", function () {
-    it("should not begin full", function () {
-      var anotherBoard = new Board();
-      assert.equal(anotherBoard.isFull(), false);
-    });
-
-    it("should be full if no spots are empty", function () {
-      // Fill the board for the test
-      fillBoard(testBoard);
-      // Test fullness
-      assert.equal(testBoard.isFull(), true);
-    });
-  });
-
   describe('#isMine', function() {
     it('should return true when the retrieved piece matches the color', function() {
       assert.equal(testBoard.isMine([3, 3], 'white'), true);

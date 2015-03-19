@@ -34,12 +34,6 @@ Board.prototype.hasMove = function (color) {
 };
 
 /**
- * Checks if every position on the Board is occupied.
- */
-Board.prototype.isFull = function () {
-};
-
-/**
  * Checks if the piece at a given position
  * matches a given color.
  */
