@@ -5,6 +5,10 @@ var Piece = require("./piece");
  * and two white pieces at [3, 3] and [4, 4]
  */
 function _makeGrid () {
+  return [Array(8),Array(8),Array(8),
+    Array(3).concat([new Piece('white'), new Piece('black')]).concat(Array(3)),
+    Array(3).concat([new Piece('black'), new Piece('white')]).concat(Array(3)),
+    Array(8),Array(8),Array(8)];
 }
 
 /**
@@ -25,12 +29,20 @@ Board.DIRS = [
  * throwing an Error if the position is invalid.
  */
 Board.prototype.getPiece = function (pos) {
+  var x = pos[0];
+  var y = pos[1];
+  if (!this.isValidPos(pos)){
+    throw new Error("Not on the board!");
+  } else {
+    return this.grid[y][x];
+  }
 };
 
 /**
  * Checks if there are any valid moves for the given color.
  */
 Board.prototype.hasMove = function (color) {
+
 };
 
 /**
@@ -38,12 +50,15 @@ Board.prototype.hasMove = function (color) {
  * matches a given color.
  */
 Board.prototype.isMine = function (pos, color) {
+  var piece = this.getPiece(pos);
+  return piece && color === piece.color;
 };
 
 /**
  * Checks if a given position has a piece on it.
  */
 Board.prototype.isOccupied = function (pos) {
+  return !!this.getPiece(pos);
 };
 
 /**
@@ -57,6 +72,9 @@ Board.prototype.isOver = function () {
  * Checks if a given position is on the Board.
  */
 Board.prototype.isValidPos = function (pos) {
+  var x = pos[0];
+  var y = pos[1];
+  return (x <= 7 && x >= 0 && y <= 7 && y >= 0);
 };
 
 /**
@@ -73,6 +91,25 @@ Board.prototype.isValidPos = function (pos) {
  * Returns null if no pieces of the opposite color are found.
  */
 function _positionsToFlip (board, pos, color, dir, piecesToFlip) {
+  var newPos = _addPos(pos,dir);
+  if (!board.validPos(newPos)) {
+    return null;
+  } else if(!board.isOccupied(newPos)) {
+    return null;
+  } else if (board.isMine(newPos, color)) {
+    if(piecesToFlip.length === 0) {
+      return null;
+    } else {
+      return piecesToFlip;
+    }
+  } else {
+    piecesToFlip.push(board.getPiece(newPos));
+    _positionsToFlip(board, newPos, color, dir, piecesToFlip);
+  }
+}
+
+function _addPos(pos,dir) {
+  return [pos[0]+dir[0], pos[1]+dir[1]];
 }
 
 /**
@@ -96,6 +133,18 @@ Board.prototype.print = function () {
  * color being flipped.
  */
 Board.prototype.validMove = function (pos, color) {
+  if(!this.validPosition) {
+    return false;
+  } else if(this.isOccupied(pos)) {
+    return false;
+  } else {
+    for(var i = 0; i < Board.DIRS.length; i++) {
+      if(_positionsToFlip(this, pos, color, Board.DIRS[i], []) !== null) {
+        return true;
+      }
+    }
+    return false;
+  }
 };
 
 /**
